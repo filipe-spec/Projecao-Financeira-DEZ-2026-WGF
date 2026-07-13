@@ -241,7 +241,7 @@ function updateSaldoAtual() {
 }
 
 // ─── Gráficos ─────────────────────────────────────────────────
-function updateCharts() { buildMonthly(); buildMacro(); buildSuppliers(); buildClients(); }
+function updateCharts() { buildMonthly(); buildMacro(); buildSuppliers(); buildClients(); buildCategoryPivot(); }
 
 const dlBar = { // rótulos para barras verticais — âncora no topo
   anchor:'end', align:'end',
@@ -301,6 +301,21 @@ function buildMonthly() {
       },
     },
   });
+
+  // Preencher a Tabela de Dados do Fluxo Mensal
+  const tbodyTblMonth = document.getElementById('tbl-monthly-data');
+  if (tbodyTblMonth) {
+    if (labels.length === 0) {
+      tbodyTblMonth.innerHTML = '<tr><td style="text-align:center;padding:20px;color:var(--txt-faint)">Sem dados no período.</td></tr>';
+    } else {
+      let theadHtml = `<thead><tr><th>Mês</th>${labels.map(l => `<th>${l}</th>`).join('')}</tr></thead>`;
+      let entHtml = `<tr><td>Entradas (Receitas)</td>${ents.map(v => `<td class="val-pos">${BRL.format(v)}</td>`).join('')}</tr>`;
+      let saiHtml = `<tr><td>Saídas (Despesas)</td>${sais.map(v => `<td class="val-neg">${BRL.format(v)}</td>`).join('')}</tr>`;
+      let resHtml = `<tr><td>Resultado do Mês</td>${ents.map((v, i) => { const r = v - sais[i]; return `<td class="${r >= 0 ? 'val-pos' : 'val-neg'}">${BRL.format(r)}</td>`; }).join('')}</tr>`;
+      let cumHtml = `<tfoot><tr><td>Saldo Acumulado</td>${saldoCum.map(v => `<td class="${v >= 0 ? 'val-pos' : 'val-neg'}">${BRL.format(v)}</td>`).join('')}</tr></tfoot>`;
+      tbodyTblMonth.innerHTML = theadHtml + '<tbody>' + entHtml + saiHtml + resHtml + '</tbody>' + cumHtml;
+    }
+  }
 }
 
 function buildMacro() {
@@ -373,6 +388,58 @@ function buildClients() {
       },
     },
   });
+}
+
+function buildCategoryPivot() {
+  const saidas = ST.filteredData.filter(r => r.fluxo === 'Saída');
+  const tbl = document.getElementById('tbl-category-pivot');
+  if (!tbl) return;
+
+  if (!saidas.length) {
+    tbl.innerHTML = '<tr><td style="text-align:center;padding:20px;color:var(--txt-faint)">Nenhuma despesa no período selecionado.</td></tr>';
+    return;
+  }
+  
+  const monthsSet = new Set();
+  for (const r of saidas) monthsSet.add(r.monthKey);
+  const monthKeys = [...monthsSet].sort();
+  const monthLabels = {};
+  for (const r of saidas) { monthLabels[r.monthKey] = capitalize(r.monthLabel); }
+
+  const byCat = {};
+  for (const r of saidas) {
+    const cat = r.categoria || 'Sem categoria';
+    if (!byCat[cat]) { byCat[cat] = { total: 0 }; monthKeys.forEach(m => byCat[cat][m] = 0); }
+    byCat[cat][r.monthKey] += r.valor;
+    byCat[cat].total += r.valor;
+  }
+
+  const sortedCats = Object.keys(byCat).sort((a, b) => byCat[b].total - byCat[a].total);
+
+  const monthTotals = {};
+  monthKeys.forEach(m => monthTotals[m] = 0);
+  let grandTotal = 0;
+  for (const cat of sortedCats) {
+    for (const m of monthKeys) { monthTotals[m] += byCat[cat][m]; }
+    grandTotal += byCat[cat].total;
+  }
+
+  const thead = `<thead><tr>
+    <th>Categoria</th>
+    ${monthKeys.map(m => `<th>${monthLabels[m]}</th>`).join('')}
+  </tr></thead>`;
+
+  const tbody = `<tbody>${sortedCats.map(cat => `<tr>
+    <td>${esc(cat)}</td>
+    ${monthKeys.map(m => `<td>${byCat[cat][m] === 0 ? '<span style="color:var(--txt-faint);">-</span>' : BRL.format(byCat[cat][m])}</td>`).join('')}
+  </tr>`).join('')}</tbody>`;
+
+  const tfoot = `<tfoot><tr>
+    <td>TOTAL DESPESAS</td>
+    ${monthKeys.map(m => `<td>${BRL.format(monthTotals[m])}</td>`).join('')}
+  </tr></tfoot>`;
+
+  tbl.innerHTML = thead + tbody + tfoot;
 }
 
 function destroyChart(key){ if (ST.charts[key]){ ST.charts[key].destroy(); delete ST.charts[key]; } }

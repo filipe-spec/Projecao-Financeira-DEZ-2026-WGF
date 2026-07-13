@@ -363,6 +363,27 @@
             <div class="chart-wrap">
               <canvas id="c-monthly"></canvas>
             </div>
+            <!-- Tabela de dados do Fluxo Mensal -->
+            <div class="monthly-table-wrap" style="margin-top:24px; overflow-x:auto;">
+              <table class="data-table" id="tbl-monthly-data">
+                <!-- Preenchido via JS -->
+              </table>
+            </div>
+          </div>
+
+          <!-- Despesas por Categoria (Pivot Table - full width) -->
+          <div class="chart-card chart-full">
+            <div class="chart-head">
+              <div>
+                <div class="chart-title">Despesas Mensais por Categoria</div>
+                <div class="chart-sub">Evolução dos gastos separados por categoria ao longo dos meses selecionados</div>
+              </div>
+            </div>
+            <div class="monthly-table-wrap" style="overflow-x:auto;">
+              <table class="data-table" id="tbl-category-pivot">
+                <!-- Preenchido via JS -->
+              </table>
+            </div>
           </div>
 
           <!-- Macrocategoria -->

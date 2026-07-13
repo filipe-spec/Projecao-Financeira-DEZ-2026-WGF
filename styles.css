@@ -751,3 +751,23 @@ tbody td {
 .toast.hidden { transform: translateY(20px); opacity: 0; pointer-events: none; }
 .toast-success { background: var(--green); }
 .toast-error   { background: var(--red); }
+
+/* ── 19. Data Tables (Mini) ─────────────────────── */
+.data-table {
+  width: 100%; border-collapse: collapse; font-size: 11px;
+  border: 1px solid var(--border-sub);
+}
+.data-table th, .data-table td {
+  padding: 8px 12px; border-bottom: 1px solid var(--border-sub);
+  text-align: right; white-space: nowrap;
+}
+.data-table th:first-child, .data-table td:first-child { text-align: left; font-weight: 600; color: var(--navy); }
+.data-table thead th {
+  background: var(--bg); color: var(--txt-muted); text-transform: uppercase; letter-spacing: 0.05em; font-size: 10px;
+}
+.data-table tbody tr:hover { background: rgba(176,112,32,0.04); }
+.data-table tfoot th, .data-table tfoot td {
+  background: var(--bg); font-weight: 700; color: var(--navy); border-top: 2px solid var(--border-sub);
+}
+.data-table .val-pos { color: var(--green); }
+.data-table .val-neg { color: var(--red); }
