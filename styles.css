@@ -275,8 +275,8 @@ canvas  { display: block; }
 }
 
 /* Period */
-.period-row { display: flex; gap: 8px; }
-.period-field { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.period-row { display: flex; flex-direction: column; gap: 8px; }
+.period-field { display: flex; flex-direction: column; gap: 4px; }
 .period-field label { font-size: 10px; color: var(--txt-faint); }
 .period-field input[type="month"] {
   width: 100%;
