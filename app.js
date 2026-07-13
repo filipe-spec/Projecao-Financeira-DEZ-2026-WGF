@@ -424,6 +424,14 @@ function buildCategoryPivot() {
     grandTotal += byCat[cat].total;
   }
 
+  // Encontrar o maior valor individual para a escala do mapa de calor (gradiente)
+  let maxVal = 0;
+  for (const cat of sortedCats) {
+    for (const m of monthKeys) {
+      if (byCat[cat][m] > maxVal) maxVal = byCat[cat][m];
+    }
+  }
+
   const thead = `<thead><tr>
     <th>Categoria</th>
     ${monthKeys.map(m => `<th>${monthLabels[m]}</th>`).join('')}
@@ -431,7 +439,13 @@ function buildCategoryPivot() {
 
   const tbody = `<tbody>${sortedCats.map(cat => `<tr>
     <td>${esc(cat)}</td>
-    ${monthKeys.map(m => `<td>${byCat[cat][m] === 0 ? '<span style="color:var(--txt-faint);">-</span>' : BRL.format(byCat[cat][m])}</td>`).join('')}
+    ${monthKeys.map(m => {
+      const val = byCat[cat][m];
+      if (val === 0) return `<td><span style="color:var(--txt-faint);">-</span></td>`;
+      // Calcula a intensidade do gradiente (de 5% a 35% de opacidade na cor vermelha)
+      const alpha = maxVal > 0 ? 0.02 + (0.35 * (val / maxVal)) : 0;
+      return `<td style="background-color: rgba(220, 38, 38, ${alpha.toFixed(3)})">${BRL.format(val)}</td>`;
+    }).join('')}
   </tr>`).join('')}</tbody>`;
 
   const tfoot = `<tfoot><tr>
