@@ -686,3 +686,68 @@ tbody td {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-sub); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border); }
+
+/* ── 16. CRUD Modals & Forms ────────────────────── */
+.form-modal-box { max-width: 600px; text-align: left; padding: 32px; }
+.form-modal-box h3 { border-bottom: 1px solid var(--border-sub); padding-bottom: 16px; margin-bottom: 24px; font-size: 18px; color: var(--navy); }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.fg-span { grid-column: 1 / -1; }
+
+.form-group label { font-size: 12px; font-weight: 600; color: var(--txt-muted); }
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border-sub);
+  border-radius: var(--radius-sm);
+  color: var(--txt);
+  font-size: 13px;
+  font-family: inherit;
+  transition: all var(--transition);
+}
+.form-group input:focus, .form-group select:focus { outline: none; border-color: var(--gold); background: var(--surface); box-shadow: 0 0 0 3px var(--gold-dim); }
+
+.form-hr { border: none; border-top: 1px solid var(--border-sub); margin: 24px 0; }
+
+.modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+.btn-cancel {
+  background: transparent; border: 1px solid var(--border-sub); color: var(--txt-muted);
+  padding: 10px 24px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; transition: all var(--transition);
+}
+.btn-cancel:hover { background: var(--bg); color: var(--txt); }
+.btn-danger {
+  background: var(--red); color: #fff; border: none;
+  padding: 10px 24px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; transition: all var(--transition);
+}
+.btn-danger:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+.modal-error {
+  background: var(--red-dim); color: var(--red);
+  padding: 12px; border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 500; margin-top: 16px; border: 1px solid rgba(220,38,38,0.25);
+}
+
+/* ── 17. Tabela Ações ───────────────────────────── */
+.td-actions { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.btn-tbl-edit, .btn-tbl-del {
+  background: transparent; border: none; font-size: 14px;
+  cursor: pointer; padding: 4px; border-radius: 4px; transition: background 0.2s;
+  opacity: 0.6;
+}
+.btn-tbl-edit:hover { background: var(--blue-dim); opacity: 1; }
+.btn-tbl-del:hover  { background: var(--red-dim); opacity: 1; }
+
+/* ── 18. Toast ──────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 2000;
+  padding: 14px 24px; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600; color: #fff;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(0); opacity: 1;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.toast.hidden { transform: translateY(20px); opacity: 0; pointer-events: none; }
+.toast-success { background: var(--green); }
+.toast-error   { background: var(--red); }
